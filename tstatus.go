@@ -4,30 +4,52 @@ package main
 
 import (
     "os"
+    "fmt"
     "os/exec"
     "log"
     "net/http"
     "encoding/json"
     "strconv"
-    "golang.org/x/text/language"
-    "golang.org/x/text/message"
 
 )
+
+func Format(n int64) string {
+	in := strconv.FormatInt(n, 10)
+	numOfDigits := len(in)
+	if n < 0 {
+		numOfDigits-- // First character is the - sign (not a digit)
+	}
+	numOfCommas := (numOfDigits - 1) / 3
+
+	out := make([]byte, len(in)+numOfCommas)
+	if n < 0 {
+		in, out[0] = in[1:], '-'
+	}
+
+	for i, j, k := len(in)-1, len(out)-1, 0; ; i, j = i-1, j-1 {
+		out[j] = in[i]
+		if i == 0 {
+			return string(out)
+		}
+		if k++; k == 3 {
+			j, k = j-1, 0
+			out[j] = ','
+		}
+	}
+}
 
 func main() {
 
 	// accepts one optional argument the path, defaults to /
 	searchPath := "/"
 	if len(os.Args) > 1 { searchPath = os.Args[1] }
-	// setup a pretty printer
-	printer := message.NewPrinter(language.English)
 
 	// run the `df -H <searchPath>` command
 	output, err := exec.Command("df", "-H", searchPath).Output()
 	if err != nil { log.Fatal(err) }
 	// Display the results
-	printer.Print(string(output))
-	printer.Printf("\n")
+	fmt.Print(string(output))
+	fmt.Printf("\n")
 
 	// Query the server status using the REST API 
 	// curl http://127.0.0.1:26657/status
@@ -48,7 +70,7 @@ func main() {
 	if err != nil { log.Fatalln(err) }
 
 	// Display intreting server status
-	printer.Printf("%12s %12s %15s\n", "block height", "catching up", "voting power")
-	printer.Printf("%12d %12t %15d\n", latest_block_height, catching_up, voting_power)
+	fmt.Printf("%19s %11s %15s\n", "latest_block_height", "catching_up", "voting_power")
+	fmt.Printf("%19s %11t %15s\n", Format(latest_block_height), catching_up, Format(voting_power))
 
 }
