@@ -62,11 +62,11 @@ func main() {
 	if err := json.NewDecoder(resp.Body).Decode(&jResp); err != nil {
 		log.Fatal("ooopsss! an error occurred, please try again")
 	}
-	result   := jResp["result"].(map[string]interface{})
-	syncInfo := result["sync_info"].(map[string]interface{})
-	latest_block_height, err := strconv.ParseInt(syncInfo["latest_block_height"].(string), 0, 64)
-	catching_up := syncInfo["catching_up"]
-	voting_power, err := strconv.ParseInt(result["validator_info"].(map[string]interface{})["voting_power"].(string), 0, 64)
+	status    := jResp["result"].(map[string]interface{})
+	sync_info := status["sync_info"].(map[string]interface{})
+	latest_block_height, err := strconv.ParseInt(sync_info["latest_block_height"].(string), 0, 64)
+	catching_up := sync_info["catching_up"]
+	voting_power, err := strconv.ParseInt(status["validator_info"].(map[string]interface{})["voting_power"].(string), 0, 64)
 	if err != nil { log.Fatalln(err) }
 
 	// Display intreting server status
