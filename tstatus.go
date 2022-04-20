@@ -1,7 +1,5 @@
 package main
 
-// go get golang.org/x/text/language
-
 import (
     "os"
     "fmt"
