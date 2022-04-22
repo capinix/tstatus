@@ -1,0 +1,41 @@
+version: "2.0"
+
+services:
+  web:
+    image: kelechioliver3/akash-ubuntu:lastest
+    env:
+      - sshport=22000
+      - pubkey=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDEdExw+zE+MXEzEcS3JuA5FMYTyzCZ7XeLGR2ZbkO21lWVupQ6Vcq/3UHFW4QMDPt/xOrHYSUB9UoiwpDH+jSKE5CK5TIyCcPorzJ+rA7T2GGJ8hAJylqpSuEWS1VaO837G4D7Xt82QiHxyFEyWxn4lSw/59GPgMdoFaOjc0dApY3a1x2932WELm1l6iMDUDAtPMJc8I+YY8YwelVNELDFnzTuOxdbla4xb1UrFnEDM7Tfedfcf8UUidFVA9d17vytNAZW5R47qVipM36n++AN103XMsWTGIpyC2rX/4nAGJ2N9qR3F1pq8edL+XjIc1OeO5Ryzvx+yQmuqpekV8XYJQm60M/q3WUHlQUHldrBYKpiQVwTz/y9aqAK7wr0zI/92eyFSfKFfbexD0G7tf7FwKH1NrsxCnlgsRbLsRrczWjsxNS7gBVdoUa1ewu0YfNz3ay18DUDHX5GzFG4gtrCF3favWnVVoRKMQD92/MkeaIopvFmBZ1d7lBhtkuFhxE= oliver@olivers-bot
+    expose:
+      - port: 22000
+        as: 22000
+        to:
+          - global: true
+
+profiles:
+  compute:
+    web:
+      resources:
+        cpu:
+          units: 2
+        memory:
+          size: 2Gi
+        storage:
+          size: 160Gi
+  placement:
+    dcloud:
+      attributes:
+        host: akash
+      signedBy:
+        anyOf:
+          - "akash1365yvmc4s7awdyj3n2sav7xfx76adc6dnmlx63"
+      pricing:
+        web:
+          denom: uakt
+          amount: 30
+
+deployment:
+  web:
+    dcloud:
+      profile: web
+      count: 1
